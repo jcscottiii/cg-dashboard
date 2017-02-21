@@ -145,8 +145,9 @@ export default class CreateServiceInstance extends React.Component {
             validator={ this.validateString }
           />
           { createAction }
-                                                                                                                                       <Action label="cancel" style="base" type="outline"
-              clickHandler={ this._onCancelForm.bind(this) }>
+          <Action label="cancel" style="base" type="outline"
+            clickHandler={ this._onCancelForm.bind(this) }
+          >
             Cancel
           </Action>
         </Form>

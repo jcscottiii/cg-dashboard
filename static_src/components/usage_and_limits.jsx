@@ -69,13 +69,16 @@ export default class UsageAndLimits extends React.Component {
     this.props = props;
 
     this.formGuid = `app-${props.app.guid}-usage-and-limits`;
+    // Setup a change listener so the maximum adjusts properly with instances
+    const memory = this.props.app.memory;
+    const disk_quota = this.props.app.disk_quota; // eslint-disable-line camelcase
     const form = FormStore.create(this.formGuid, {
       memory: {
-        value: 1,
+        value: memory,
         validator: validateInteger({ min: 1, max: 2048 })
       },
       disk_quota: {
-        value: 1,
+        value: disk_quota,
         validator: validateInteger({ min: 1, max: 2 * 1024 })
       },
       instances: {
@@ -100,29 +103,8 @@ export default class UsageAndLimits extends React.Component {
     this.setState(stateSetter(Object.assign({}, this.props, { editing: !this.state.editing })));
   }
 
-  _onChange(property, value) {
-    let parsedValue = value;
-    switch (property) {
-      case 'disk_quota':
-      case 'memory':
-        parsedValue = megabytes(value);
-        break;
-      default:
-        parsedValue = parseInt(value, 10);
-        break;
-    }
-
-    const partialApp = Object.assign(
-      {},
-      this.state.partialApp,
-      { [property]: parsedValue }
-    );
-    this.setState({ partialApp });
-  }
-
-
   get disk() {
-    const disk = this.state.editing ? this.state.partialApp.disk_quota : this.props.app.disk_quota;
+    const disk = this.props.app.disk_quota;
 
     // For instance usage, we average the instances together
     return (
@@ -132,20 +114,17 @@ export default class UsageAndLimits extends React.Component {
         amountTotal={ this.getStat('disk_quota') }
       />
       <ResourceUsage title="Instance disk allocation"
-        formGuid = { this.formGuid }
-        editable={ this.state.editing }
-        name="disk_quota"
         amountTotal={ disk * 1024 * 1024 }
+        editable={ this.state.editing }
+        formGuid = { this.formGuid }
+        name="disk_quota"
       />
     </div>
     );
   }
 
   get memory() {
-    // Setup a change listener so the maximum adjusts properly with instances
-    const onChange = this._onChange.bind(this, 'memory');
-    const maxMemory =  Math.floor(this.props.quota.memory_limit / this.state.partialApp.instances);
-    const memory = this.state.editing ? this.state.partialApp.memory : this.props.app.memory;
+    const memory = this.props.app.memory;
 
     // For instance usage, we average the instances together
     return (
@@ -155,13 +134,10 @@ export default class UsageAndLimits extends React.Component {
         amountTotal={ this.getStat('mem_quota') }
       />
       <ResourceUsage title="Instance memory allocation"
+        amountTotal={ memory * 1024 * 1024 }
         editable={ this.state.editing }
         formGuid={ this.formGuid }
-        min={ 1 }
-        max={ maxMemory }
         name="memory"
-        onChange={ onChange }
-        amountTotal={ memory * 1024 * 1024 }
       />
     </div>
     );
@@ -191,18 +167,7 @@ export default class UsageAndLimits extends React.Component {
   }
 
   get scale() {
-    const onValidate = (err, value) => {
-      if (err) {
-        // No need to update model on error
-        return;
-      }
-
-      this._onChange('instances', value);
-    };
-
-    const instanceCount = this.state.editing ?
-      this.state.partialApp.instances : this.props.app.instances;
-
+    const instanceCount = this.props.app.instances;
 
     let instances = (
       <span className={ this.styler('stat-primary')}>
@@ -216,11 +181,8 @@ export default class UsageAndLimits extends React.Component {
           className={ this.styler('stat-input', 'stat-input-text', 'stat-input-text-scale') }
           id="scale"
           inline
-          min={ 1 }
-          max={ 64 }
           name="instances"
           formGuid={ this.formGuid }
-          onValidate={ onValidate }
           value={ instanceCount }
         />
       );
@@ -238,9 +200,14 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit(partialApp) {
-   // appActions.updateApp(this.props.app.guid, partialApp);
-    this.setState({ editing: false, partialApp });
+  _onSubmit(errors, partialApp) {
+    if (errors.length) {
+      console.warn({ errors });
+      return;
+    }
+
+    appActions.updateApp(this.props.app.guid, partialApp);
+    this.setState({ editing: false });
   }
 
   render() {
@@ -303,7 +270,7 @@ export default class UsageAndLimits extends React.Component {
 
     if (this.props.app && this.state.editing) {
       // Wrap content in a form element
-      content = <Form guid={ this.formGuid } onValid={ this._onSubmit }>{ content }</Form>;
+      content = <Form guid={ this.formGuid } onSubmit={ this._onSubmit }>{ content }</Form>;
     }
 
     return content;

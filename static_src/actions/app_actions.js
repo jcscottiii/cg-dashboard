@@ -35,6 +35,16 @@ const appActions = {
     return Promise.resolve(app);
   },
 
+  modifyAppResourcesFormChange(appGuid, form) {
+    AppDispatcher.handleViewAction({
+      type: appActionTypes.APP_UPDATE,
+      form,
+      appGuid
+    });
+
+    return Promise.resolve(form);
+  },
+
   updateApp(appGuid, appPartial) {
     AppDispatcher.handleViewAction({
       type: appActionTypes.APP_UPDATE,

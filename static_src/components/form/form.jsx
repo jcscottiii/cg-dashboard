@@ -15,20 +15,25 @@ import formActions from '../../actions/form_actions';
 import FormStore from '../../stores/form_store';
 
 
+function stateSetter(props) {
+  const model = FormStore.get(props.guid, false);
+  const errors = model.validate() || [];
+
+  return {
+    errors,
+    model
+  };
+}
+
 export default class Form extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = {
-      isValid: false,
-      fields: {},
-      fieldValues: {},
-      errs: [],
-      model: props.model
-    };
-    this._handleSubmit = this._handleSubmit.bind(this);
+    this.state = stateSetter(props);
+
     this._onChange = this._onChange.bind(this);
     this._onStoreChange = this._onStoreChange.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -40,44 +45,10 @@ export default class Form extends React.Component {
   }
 
   validate() {
-    let name;
-    const errs = [];
-    for (name in this.state.fields) {
-      if (!this.state.fields.propertyIsEnumerable(name)) {
-        continue;
-      }
-
-      const field = this.state.fields[name];
-      const err = field.validate();
-      if (err) {
-        errs.push(err);
-      }
-    }
-    this.setState({ errs, isValid: !!errs.length });
-    this.props.onValidate(errs, this.state.fieldValues);
-    if (!errs.length) {
-      this.props.onValid(this.state.fieldValues);
-    }
-  }
-
-  _handleSubmit(ev) {
-    const values = this.state.fieldValues;
-    ev.preventDefault();
-    let name;
-    for (name in this.state.fields) {
-      if (!this.state.fields.propertyIsEnumerable(name)) {
-        continue;
-      }
-
-      const field = this.state.fields[name];
-      values[name] = field.state.value;
-    }
-    this.setState({ fieldValues: values });
   }
 
   _onStoreChange() {
-    const model = FormStore.get(this.props.guid);
-    this.setState({ model });
+    this.setState(stateSetter(this.props));
   }
 
   _onSubmit(e) {
@@ -87,10 +58,10 @@ export default class Form extends React.Component {
     }
 
     e.preventDefault();
-    const errors = this.state.form.validate();
+    const errors = this.state.errors;
 
     // Create a simple object of name/value pairs
-    const formData = this.state.form.fields.reduce((form, formField) =>
+    const formData = this.state.model.fields.reduce((form, formField) =>
       ({ ...form, [formField.name]: formField.value })
     , {});
 
@@ -109,13 +80,13 @@ export default class Form extends React.Component {
     let errorMsg;
     const classes = classNames(...this.props.classes);
 
-    if (this.state.errs.length) {
+    if (this.state.errors.length) {
       errorMsg = <FormError message="There were errors submitting the form." />;
     }
 
     return (
       <form id={ this.props.guid } action={ this.props.action } method={ this.props.method }
-        onSubmit={ this._onSumbit } className={ classes } onChange={ this._onChange }
+        onSubmit={ this._onSubmit } className={ classes } onChange={ this._onChange }
       >
         { errorMsg }
         <fieldset>
