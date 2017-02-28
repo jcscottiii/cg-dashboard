@@ -200,11 +200,18 @@ export default class UsageAndLimits extends React.Component {
     );
   }
 
-  _onSubmit(errors, partialApp) {
+  _onSubmit(errors, form) {
     if (errors.length) {
       console.warn({ errors });
       return;
     }
+
+    // Parse the form
+    const partialApp = {
+      disk_quota: parseInt(form.disk_quota, 10),
+      instances: parseInt(form.instances, 10),
+      memory: parseInt(form.memory, 10)
+    };
 
     appActions.updateApp(this.props.app.guid, partialApp);
     this.setState({ editing: false });
