@@ -7,9 +7,10 @@ import HeaderLink from './header_link.jsx';
 
 import Action from './action.jsx';
 import createStyler from '../util/create_styler';
+import themeable from '../util/themeable';
 import { config } from 'skin';
 
-export default class Header extends React.Component {
+export class Header extends React.Component {
 
   constructor(props) {
     super(props);
@@ -58,3 +59,5 @@ export default class Header extends React.Component {
     );
   }
 }
+
+export default themeable(Header);

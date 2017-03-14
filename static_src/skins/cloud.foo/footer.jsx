@@ -1,9 +1,7 @@
 
 import React from 'react';
 
-import createStyler from '../util/create_styler';
-import themeable from '../util/themeable';
-import { config } from 'skin';
+import createStyler from '../../util/create_styler';
 import style from 'cloudgov-style/css/cloudgov-style.css';
 
 export class Footer extends React.Component {
@@ -18,18 +16,16 @@ export class Footer extends React.Component {
       <footer className={ this.styler('grid', 'footer', 'footer-no_sidebar') }>
         <section className={ this.styler('grid-width-6') }>
           <ul className={ this.styler('footer-links') }>
-            { config.footer.links.map((link) =>
-              <li key={ link.url }>
-                <a href={ link.url }>{ link.text }</a>
-              </li>
-            )}
+            <li>one</li>
+            <li>two</li>
+            <li>three</li>
           </ul>
         </section>
         <section className={ this.styler('grid-width-6') }>
           <ul className={ this.styler('footer-info') }>
-            <li>{ config.footer.disclaimer }</li>
-            <li>{ config.footer.code_note }</li>
-            <li>{ config.footer.author_note }</li>
+            <li>alpha</li>
+            <li>beta</li>
+            <li>delta</li>
           </ul>
         </section>
       </footer>
@@ -37,4 +33,4 @@ export class Footer extends React.Component {
   }
 }
 
-export default themeable(Footer);
+export default Footer;
