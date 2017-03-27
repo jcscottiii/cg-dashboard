@@ -1,0 +1,9 @@
+---
+inherit: manifest-region-base.yml
+buildpack: nodejs_buildpack
+applications:
+- name: cg-dashboard-testing-server
+  host: dashboard-testing-server
+  instances: 2
+  env:
+    CONSOLE_HOSTNAME: https://dashboard-testing-server.app.cloud.gov

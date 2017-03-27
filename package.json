@@ -13,6 +13,7 @@
     "check-style": "/bin/bash -c '[[ $(npm ls cloudgov-style) =~ \"git://github.com\" ]] && npm run build-style || exit 0'",
     "clean": "rm -rf ./static/assets/*",
     "lint": "eslint --ext .js --ext .jsx ./static_src",
+    "start": "npm run testing-server-run",
     "test": "npm run lint && npm run test-unit && npm run test-functional",
     "test-functional": "NODE_ENV=test npm run testing-server-run -- wdio wdio.conf.js",
     "test-unit": "NODE_ENV=test karma start --single-run",

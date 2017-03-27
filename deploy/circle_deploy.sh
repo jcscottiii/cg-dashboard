@@ -22,26 +22,9 @@ cf install-plugin -f /home/ubuntu/.go_workspace/bin/autopilot
 # Note: Spaces and deployer account username are the same in different environments.
 # Only the organization, api, deployer account password differ.
 
-
-if [[ "$CIRCLE_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)? ]]
-then
-	CF_MANIFEST="manifest-prod.yml"
-	CF_SPACE="dashboard-prod"
-	CF_APP="cg-dashboard"
-elif [ "$CIRCLE_BRANCH" == "master" ]
-then
-	CF_MANIFEST="manifest-staging.yml"
-	CF_SPACE="dashboard-stage"
-	CF_APP="cg-dashboard-staging"
-elif [ "$CIRCLE_BRANCH" == "demo" ]
-then
-	CF_MANIFEST="manifest-demo.yml"
-	CF_SPACE="dashboard-stage"
-	CF_APP="cg-dashboard-demo"
-else
-  echo Unknown environment, quitting. >&2
-  exit 1
-fi
+CF_MANIFEST="manifest-testing-demo.yml"
+CF_SPACE="dashboard-stage"
+CF_APP="cg-dashboard-testing-server"
 
 echo env:      $manifest_env
 echo manifest: $CF_MANIFEST
