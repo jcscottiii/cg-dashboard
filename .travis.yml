@@ -5,6 +5,7 @@ go:
 services:
   - docker
 before_install:
+- python expose.py
 - echo "CONSOLE_TEST_USERNAME"
 - echo "$CONSOLE_TEST_USERNAME"
 - echo "CF_USERNAME"
