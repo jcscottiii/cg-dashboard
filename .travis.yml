@@ -5,6 +5,16 @@ go:
 services:
   - docker
 before_install:
+- echo "CONSOLE_TEST_USERNAME"
+- echo "$CONSOLE_TEST_USERNAME"
+- echo "CF_USERNAME"
+- echo "$CF_USERNAME"
+- echo "CF_PASSWORD"
+- echo "$CF_PASSWORD"
+- echo "CF_PASSWORD_GC"
+- echo "$CF_PASSWORD_GC"
+- echo "CONSOLE_TEST_PASSWORD"
+- echo "$CONSOLE_TEST_PASSWORD"
 - nvm install
 - npm install
 - npm run build
