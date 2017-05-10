@@ -24,7 +24,7 @@ before_deploy:
 - export GOBINDATA_BIN=$(which go-bindata)
 - export PATH=$GOBINDATA_BIN:$PATH
 - echo $GOBINDATA_BIN
-# Download the autopilot binary
+# Download the autopilot binary.
 - go get -u github.com/concourse/autopilot
 - export GOAUTOPILOT_BIN=$(which autopilot)
 - export PATH=$GOAUTOPILOT_BIN:$PATH
