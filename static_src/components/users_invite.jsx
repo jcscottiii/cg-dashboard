@@ -33,9 +33,11 @@ export default class UsersInvite extends React.Component {
   render() {
     return (
       <div className="test-users-invite">
-        <h2>User invite</h2>
+        <h3>Invite new user</h3>
         <PanelDocumentation>
-          <p>Organizational Managers can add new users below.</p>
+          <p>If a user doesn't exist in the list above, you can invite them
+          to cloud.gov and your organization by filling out their email address
+          below.</p>
         </PanelDocumentation>
         <Form
           guid={ USERS_INVITE_FORM_GUID }
@@ -43,9 +45,6 @@ export default class UsersInvite extends React.Component {
           ref="form"
           onSubmit={ this._onValidForm }
         >
-          <legend>
-            Invite a new user
-          </legend>
           <FormText
             formGuid={ USERS_INVITE_FORM_GUID }
             classes={ ['test-users_invite_name'] }
