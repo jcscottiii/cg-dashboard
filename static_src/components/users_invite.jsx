@@ -34,7 +34,7 @@ export default class UsersInvite extends React.Component {
     return (
       <div className="test-users-invite">
         <h3>Invite new user</h3>
-        <PanelDocumentation>
+        <PanelDocumentation description>
           <p>If a user doesn't exist in the list above, you can invite them
           to cloud.gov and your organization by filling out their email address
           below.</p>
