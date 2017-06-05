@@ -1,7 +1,7 @@
 ---
 buildpack: go_buildpack
 memory: 256M
-domain: app.cloud.gov
+domain: fr.cloud.gov
 services:
 - dashboard-ups
 - dashboard-redis
