@@ -14,12 +14,14 @@ docker_config(){
 
 # Start the docker daemon as a background task:
 start_daemon(){
-  dockerd --config-file=/etc/docker/daemon.json -p /var/run/docker-bootstrap.pid &
+  #dockerd --config-file=/etc/docker/daemon.json -p /var/run/docker-bootstrap.pid &
+  service docker start
+  service docker status
   sleep 30
 }
 
 docker_install
-docker_config
+# docker_config
 start_daemon
 
 docker-compose run --rm frontend npm run build
