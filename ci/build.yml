@@ -6,8 +6,12 @@ image_resource:
     tag: 17.03-dind
 inputs:
 - name: cg-dashboard-source
-outputs:
-- name: cg-dashboard-compiled
 run:
   dir: cg-dashboard-source
-  path: ci/build.sh
+  path: sh
+  args:
+  - -exc
+  - |
+    ls -al
+    env
+  # path: ci/build.sh
