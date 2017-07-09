@@ -9,12 +9,13 @@ docker_install(){
 docker_config(){
   mkdir /etc/docker
   touch /etc/docker/daemon.json
-  echo '{"storage-driver":"btrfs","debug":true}' > /etc/docker/daemon.json
+  echo '{"storage-driver":"vfs","debug":true}' > /etc/docker/daemon.json
 }
 
 # Start the docker daemon as a background task:
 start_daemon(){
   dockerd --config-file=/etc/docker/daemon.json -p /var/run/docker-bootstrap.pid &
+  sleep 30
 }
 
 docker_install

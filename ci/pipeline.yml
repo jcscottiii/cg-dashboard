@@ -10,6 +10,7 @@ jobs:
       path: pull-request
       status: pending
   - task: build
+    privileged: true
     input_mapping:
       cg-dashboard-source: pull-request
     file: pull-request/ci/build.yml
