@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Install docker-compose:
 docker_install(){
     apk add --no-cache py-pip curl
