@@ -7,10 +7,5 @@ image_resource:
 inputs:
 - name: cg-dashboard-source
 run:
-  # dir: cg-dashboard-source
-  path: sh
-  args:
-  - -exc
-  - |
-    ls -al cg-dashboard-source
-    cg-dashboard-source/ci/build.sh
+  dir: cg-dashboard-source
+  path: ci/build.sh
