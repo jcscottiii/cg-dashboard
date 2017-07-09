@@ -5,6 +5,8 @@ image_resource:
     repository: linuxbozo/dcind
 inputs:
 - name: cg-dashboard-source
+outputs:
+- name: cg-dashboard-compiled
 run:
   dir: cg-dashboard-source
   path: ci/build.sh

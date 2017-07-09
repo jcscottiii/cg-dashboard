@@ -25,12 +25,54 @@ jobs:
         path: pull-request
         status: failure
 
+- name: deploy-staging
+  plan:
+  - get: cg-dashboard-staging-source
+    trigger: true
+  - task: build
+    input_mapping:
+      cg-dashboard-source: cg-dashboard-staging-source
+    file: cg-dashboard-staging-source/ci/build.yml
+  - put: cf-deploy-to-staging
+    params:
+      manifest: cg-dashboard-compiled/manifest.yml
+      path: cg-dashboard-compiled
+      current_app_name: cg-dashboard-staging
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy cg-dashboard to Staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed cg-dashboard to Staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 resources:
-# - name: cg-dashboard-source
-#   type: git
-#   source:
-#     uri: ((cg-dashboard-git-url))
-#     branch: ((cg-dashboard-branch))
+- name: cg-dashboard-staging-source
+  type: git
+  source:
+    uri: ((cg-dashboard-git-url))
+    branch: ((cg-dashboard-staging-branch))
+
+- name: cf-deploy-to-staging
+  type: cf
+  source:
+    api: ((cf-api-url-staging))
+    username: ((cf-deploy-username-staging))
+    password: ((cf-deploy-password-staging))
+    organization: ((cf-organization-staging))
+    space: ((cf-space-staging))
+    skip_cert_check: false
 
 - name: pull-request
   type: pull-request
@@ -44,3 +86,8 @@ resource_types:
   type: docker-image
   source:
     repository: jtarchie/pr
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
