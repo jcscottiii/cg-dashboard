@@ -2,7 +2,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: docker:dind
+    repository: busybox
 inputs:
 - name: cg-dashboard-source
 outputs:
