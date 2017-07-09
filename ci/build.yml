@@ -1,0 +1,12 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker:dind
+inputs:
+- name: cg-dashboard-source
+outputs:
+- name: cg-dashboard-compiled
+run:
+  dir: cg-dashboard-source
+  path: ci/build.sh

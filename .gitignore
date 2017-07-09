@@ -23,3 +23,4 @@ context/selenium-logs/selenium-standalone.txt
 # they only appear in the root folder.
 /index.html*
 /.glide*
+ci/credentials.yml
