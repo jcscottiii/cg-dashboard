@@ -2,8 +2,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: docker
-    tag: 17.03-dind
+    repository: linuxbozo/dcind
 inputs:
 - name: cg-dashboard-source
 run:
