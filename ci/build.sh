@@ -3,6 +3,7 @@ set -e
 source /docker-lib.sh
 start_docker
 # Get build info
+echo $BUILD_NAME
 docker-compose run --rm \
   -e BUILD_PIPELINE_NAME=$BUILD_PIPELINE_NAME \
   -e BUILD_JOB_NAME=$BUILD_JOB_NAME \
