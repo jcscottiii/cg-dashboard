@@ -30,32 +30,66 @@ jobs:
   - get: cg-dashboard-staging-source
     trigger: true
   - task: build
+    privileged: true
     input_mapping:
       cg-dashboard-source: cg-dashboard-staging-source
     file: cg-dashboard-staging-source/ci/build.yml
   - put: cf-deploy-to-staging
     params:
-      manifest: cg-dashboard-compiled/manifest.yml
+      manifest: cg-dashboard-compiled/manifests/manifest-staging.yml
       path: cg-dashboard-compiled
       current_app_name: cg-dashboard-staging
-  on_failure:
-    put: slack
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: FAILED to deploy cg-dashboard to Staging
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: ((slack-icon-url))
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Successfully deployed cg-dashboard to Staging
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: ((slack-icon-url))
+
+- name: deploy-production
+  plan:
+  - get: cg-dashboard-production-source
+    trigger: true
+  - task: build
+    privileged: true
+    input_mapping:
+      cg-dashboard-source: cg-dashboard-production-source
+    file: cg-dashboard-production-source/ci/build.yml
+  - put: cf-deploy-to-production
     params:
-      text: |
-        :x: FAILED to deploy cg-dashboard to Staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed cg-dashboard to Staging
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
+      manifest: cg-dashboard-compiled/manifests/manifest-prod.yml
+      path: cg-dashboard-compiled
+      current_app_name: cg-dashboard
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: FAILED to deploy cg-dashboard to Production
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: ((slack-icon-url))
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Successfully deployed cg-dashboard to Production
+          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: ((slack-icon-url))
 
 resources:
 - name: cg-dashboard-staging-source
@@ -63,6 +97,13 @@ resources:
   source:
     uri: ((cg-dashboard-git-url))
     branch: ((cg-dashboard-staging-branch))
+
+- name: cg-dashboard-production-source
+  type: git
+  source:
+    uri: ((cg-dashboard-git-url))
+    branch: master
+    tag_filter: "*"
 
 - name: cf-deploy-to-staging
   type: cf
@@ -74,12 +115,27 @@ resources:
     space: ((cf-space-staging))
     skip_cert_check: false
 
+- name: cf-deploy-to-production
+  type: cf
+  source:
+    api: ((cf-api-url-production))
+    username: ((cf-deploy-username-production))
+    password: ((cf-deploy-password-production))
+    organization: ((cf-organization-production))
+    space: ((cf-space-production))
+    skip_cert_check: false
+
 - name: pull-request
   type: pull-request
   source:
     repo: ((cg-dashboard-git-repo))
     access_token: ((status-access-token))
     every: true
+
+- name: slack
+  type: slack-notification
+  source:
+    url: ((slack-webhook-url))
 
 resource_types:
 - name: pull-request
