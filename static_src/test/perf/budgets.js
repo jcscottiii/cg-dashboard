@@ -10,7 +10,7 @@ module.exports = {
     goal: 16
   },
   'time-to-interactive': {
-    expectedValue: 10000,
+    expectedValue: 12000,
     goal: 4000
   },
   'total-byte-weight': {
