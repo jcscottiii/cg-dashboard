@@ -5,8 +5,9 @@ if [ ! -x $GOPATH/bin/glide ]; then
 fi
 
 export PATH=$GOPATH/bin:$PATH
-
-glide install
+if [ ! -x vendor ]; then
+  glide install
+fi
 
 prgm=$1
 shift;

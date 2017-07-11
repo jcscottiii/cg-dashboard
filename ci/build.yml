@@ -12,4 +12,3 @@ run:
   path: ci/build.sh
 caches:
 - path: cg-dashboard-source/node_modules
-- path: cg-dashboard-source/vendor
