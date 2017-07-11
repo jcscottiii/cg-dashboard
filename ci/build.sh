@@ -2,6 +2,9 @@
 set -e
 source /docker-lib.sh
 start_docker
+ls -al
+echo 'stop'
+ls -al ../
 # Get build info
 echo $BUILD_NAME
 docker-compose run --rm \
