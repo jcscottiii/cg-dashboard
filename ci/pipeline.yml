@@ -36,9 +36,11 @@ jobs:
       cg-dashboard-source: cg-dashboard-staging-source
     file: cg-dashboard-staging-source/ci/build.yml
   - put: cf-deploy-to-staging
+    input_mapping:
+      cg-dashboard-source: cg-dashboard-staging-source
     params:
-      manifest: cg-dashboard-compiled/manifests/manifest-staging.yml
-      path: cg-dashboard-compiled
+      manifest: cg-dashboard-source/manifests/manifest-staging.yml
+      path: cg-dashboard-source
       current_app_name: cg-dashboard-staging
     on_failure:
       put: slack
@@ -69,9 +71,11 @@ jobs:
       cg-dashboard-source: cg-dashboard-production-source
     file: cg-dashboard-production-source/ci/build.yml
   - put: cf-deploy-to-production
+    input_mapping:
+      cg-dashboard-source: cg-dashboard-production-source
     params:
-      manifest: cg-dashboard-compiled/manifests/manifest-prod.yml
-      path: cg-dashboard-compiled
+      manifest: cg-dashboard-source/manifests/manifest-prod.yml
+      path: cg-dashboard-source
       current_app_name: cg-dashboard
     on_failure:
       put: slack
