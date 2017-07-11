@@ -7,6 +7,7 @@ inputs:
 - name: cg-dashboard-source
 outputs:
 - name: cg-dashboard-compiled
+- path: cg-dashboard-source
 run:
   dir: cg-dashboard-source
   path: ci/build.sh
